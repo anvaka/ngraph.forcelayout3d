@@ -1,0 +1,21 @@
+{
+  "name": "ngraph.forcelayout3d",
+  "version": "0.0.0",
+  "description": "Force directed graph layout in 3d",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ngraph",
+    "graph",
+    "force-directed",
+    "layout"
+  ],
+  "author": "Andrei Kashcha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anvaka/ngraph.forcelayout3d"
+  }
+}
