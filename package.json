@@ -4,7 +4,7 @@
   "description": "Force directed graph layout in 3d",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap test/*.js"
   },
   "keywords": [
     "ngraph",
@@ -29,6 +29,7 @@
     "ngraph.random": "0.0.1",
     "ngraph.merge": "0.0.1",
     "ngraph.expose": "0.0.0",
-    "ngraph.forcelayout": "0.0.7"
+    "ngraph.forcelayout": "0.0.7",
+    "ngraph.physics.primitives": "0.0.6"
   }
 }
