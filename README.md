@@ -1,4 +1,5 @@
 # ngraph.forcelayout3d
+[![Build Status](https://travis-ci.org/anvaka/ngraph.forcelayout3d.png?branch=master)](https://travis-ci.org/anvaka/ngraph.forcelayout3d)
 
 Force directed graph layout in 3d
 
