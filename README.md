@@ -83,8 +83,7 @@ If you want to stop monitoring graph events, call `dispose()` method:
 Since this is force directed layout, sometimes it's desirable to adjust physics simulator. Please refer to [ngraph.physics.simulator](https://github.com/anvaka/ngraph.physics.simulator) to see source code and simulator parameters. You can pass physics settings as a second argument to layout constructor.
 
 ``` js
-// construct physics simulator:
-var physicsSettings = {gravity: -1.2};
+var physicsSettings = {gravity: -1.2}; // construct physics simulator settings
 
 // pass it as second argument to layout:
 var layout = require('ngraph.forcelayout3d')(graph, physicsSettings);
@@ -100,8 +99,8 @@ Finally, it's often desirable to know how much space does our graph occupy. To q
 
 ``` js
   var rect = layout.getGraphRect();
-  // rect.x1, rect.y1, z1 - left top back coordinates of bounding box
-  // rect.x2, rect.y2, z2 - right bottom front coordinates of bounding box
+  // rect.x1, rect.y1, rect.z1 - left top back coordinates of bounding box
+  // rect.x2, rect.y2, rect.z2 - right bottom front coordinates of bounding box
 ```
 
 # install
