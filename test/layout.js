@@ -67,4 +67,23 @@ test('layout initializes nodes positions', function (t) {
   t.end();
 });
 
-// todo: layout.setNodePosition() should accept three arguments
+test('Layout can set node position', function (t) {
+  var graph = createGraph();
+  graph.addLink(1, 2);
+
+  var layout = createLayout(graph);
+
+  layout.pinNode(graph.getNode(1), true);
+  layout.setNodePosition(1, 42, 43, 44);
+
+  // perform one iteration of layout:
+  layout.step();
+
+  // and make sure node 1 was not moved:
+  var actualPosition = layout.getNodePosition(1);
+  t.equals(actualPosition.x, 42, 'X has not changed');
+  t.equals(actualPosition.y, 43, 'Y has not changed');
+  t.equals(actualPosition.z, 44, 'Z has not changed');
+
+  t.end();
+});
