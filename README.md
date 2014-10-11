@@ -61,6 +61,12 @@ If you want to check whether node is pinned or not you can use `isNodePinned()` 
   layout.pinNode(node, !layout.isNodePinned(node)); // toggle it
 ```
 
+What if you still want to move your node according to some external factor (e.g. you have initial positions, or user drags pinned node)? To do this, call `setNodePosition()` method:
+
+``` js
+  layout.setNodePosition(nodeId, x, y, z);
+```
+
 ## Monitoring changes
 
 Like many other algorithms in `ngraph` family, force layout monitors graph changes via [graph events](https://github.com/anvaka/ngraph.graph#listening-to-events). It keeps layout up to date whenever graph changes:
