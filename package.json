@@ -24,7 +24,7 @@
     "ngraph.graph": "~0.0.3"
   },
   "dependencies": {
-    "ngraph.quadtreebh3d": "0.0.1",
+    "ngraph.quadtreebh3d": "0.0.2",
     "ngraph.random": "0.0.1",
     "ngraph.merge": "0.0.1",
     "ngraph.expose": "0.0.0",
