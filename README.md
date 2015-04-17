@@ -143,4 +143,4 @@ MIT
 # Feedback?
 
 I'd totally love it! Please email me, open issue here, [tweet](https://twitter.com/anvaka)
-to me, or join discussion on gitter [on gitter](https://gitter.im/anvaka/VivaGraphJS).
+to me, or join discussion [on gitter](https://gitter.im/anvaka/VivaGraphJS).
