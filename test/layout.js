@@ -1,7 +1,11 @@
 var test = require('tap').test,
-    createBody = require('../lib/createBody'),
     createGraph = require('ngraph.graph'),
     createLayout = require('..');
+
+test('it exposes 2d layout', function(t) {
+  t.ok(typeof createLayout.get2dLayout === 'function', '2d layout constructor is exposed');
+  t.end();
+});
 
 test('does not tolerate bad input', function (t) {
   t.throws(missingGraph);

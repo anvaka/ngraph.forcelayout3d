@@ -5,9 +5,9 @@
  * I was doing it wrong, will see if I can refactor/throw away this module.
  */
 module.exports = createLayout;
+createLayout.get2dLayout = require('ngraph.forcelayout');
 
 function createLayout(graph, physicsSettings) {
-  var createForceLayout = require('ngraph.forcelayout');
   var merge = require('ngraph.merge');
   physicsSettings = merge(physicsSettings, {
         createQuadTree: require('ngraph.quadtreebh3d'),
@@ -18,7 +18,5 @@ function createLayout(graph, physicsSettings) {
         createBody: require('./lib/createBody')
       });
 
-  var layout = createForceLayout(graph, physicsSettings);
-
-  return layout;
+  return createLayout.get2dLayout(graph, physicsSettings);
 }
