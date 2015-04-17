@@ -7,7 +7,6 @@
 module.exports = createLayout;
 
 function createLayout(graph, physicsSettings) {
-  var createSimulator = require('ngraph.physics.simulator');
   var createForceLayout = require('ngraph.forcelayout');
   var merge = require('ngraph.merge');
   physicsSettings = merge(physicsSettings, {
@@ -19,9 +18,7 @@ function createLayout(graph, physicsSettings) {
         createBody: require('./lib/createBody')
       });
 
-  var simulator3d = createSimulator(physicsSettings);
-
-  var layout = createForceLayout(graph, simulator3d);
+  var layout = createForceLayout(graph, physicsSettings);
 
   return layout;
 }
