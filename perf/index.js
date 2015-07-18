@@ -5,9 +5,7 @@ var suite = new Benchmark.Suite;
 
 // add tests
 suite.add('Run default', function() {
-  var layout = require('../')(graph, {
-    dimension: 2
-  });
+  var layout = require('../')(graph);
   for (var i = 0; i < 20; ++i) {
     layout.step();
   }
