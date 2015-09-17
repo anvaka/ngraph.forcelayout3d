@@ -1,16 +1,17 @@
 
-> ngraph.forcelayout3d@0.0.12 perf /Users/anvaka/projects/ngraphjs/modules/ngraph.forcelayout3d
+> ngraph.forcelayout3d@0.0.13 perf /Users/anvaka/projects/ngraphjs/modules/ngraph.forcelayout3d
 > npm version && node perf/index.js
 
-{ 'ngraph.forcelayout3d': '0.0.12',
-  npm: '2.10.1',
-  http_parser: '2.3',
-  modules: '14',
-  node: '0.12.4',
-  openssl: '1.0.1m',
-  uv: '1.5.0',
-  v8: '3.28.71.19',
+{ 'ngraph.forcelayout3d': '0.0.13',
+  npm: '2.14.2',
+  ares: '1.10.1-DEV',
+  http_parser: '2.5.0',
+  modules: '46',
+  node: '4.0.0',
+  openssl: '1.0.2d',
+  uv: '1.7.3',
+  v8: '4.5.103.30',
   zlib: '1.2.8' }
-Run default x 20.03 ops/sec ±7.05% (38 runs sampled)
-Mostly fixed nodes x 34.47 ops/sec ±7.30% (47 runs sampled)
+Run default x 25.16 ops/sec ±2.97% (46 runs sampled)
+Mostly fixed nodes x 50.24 ops/sec ±18.66% (25 runs sampled)
 Fastest is Mostly fixed nodes
