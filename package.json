@@ -32,6 +32,6 @@
     "ngraph.merge": "0.0.1",
     "ngraph.expose": "0.0.0",
     "ngraph.physics.primitives": "0.0.7",
-    "ngraph.forcelayout": "0.0.21"
+    "ngraph.forcelayout": "0.0.22"
   }
 }
