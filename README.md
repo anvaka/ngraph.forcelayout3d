@@ -117,6 +117,22 @@ var layout = require('ngraph.forcelayout3d')(graph, physicsSettings);
 You can always get current physics simulator from layout by checking `layout.simulator`
 property. This is read only property.
 
+
+### Configuring integrator
+
+If you find standard Euler integration producing too much errors and jitter,
+consider using verlet integration:
+
+``` js
+var physicsSettings = {integrator: 'verlet'};
+
+// pass it as second argument to layout:
+var layout = require('ngraph.forcelayout3d')(graph, physicsSettings);
+```
+
+Kudos to @annxingyuan for the [PR](https://github.com/anvaka/ngraph.forcelayout3d/pull/1).
+
+
 ## Space occupied by graph
 
 Finally, it's often desirable to know how much space does our graph occupy. To

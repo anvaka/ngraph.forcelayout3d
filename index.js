@@ -14,9 +14,17 @@ function createLayout(graph, physicsSettings) {
         createBounds: require('./lib/bounds'),
         createDragForce: require('./lib/dragForce'),
         createSpringForce: require('./lib/springForce'),
-        integrator: require('./lib/eulerIntegrator'),
+        integrator: getIntegrator(physicsSettings),
         createBody: require('./lib/createBody')
       });
 
   return createLayout.get2dLayout(graph, physicsSettings);
+}
+
+function getIntegrator(physicsSettings) {
+  if (physicsSettings && physicsSettings.integrator === 'verlet') {
+    return require('./lib/verletIntegrator.js');
+  }
+
+  return require('./lib/eulerIntegrator')
 }

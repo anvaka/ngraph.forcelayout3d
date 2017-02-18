@@ -10,6 +10,9 @@ var graph = require('ngraph.generators').grid3(10, 10, 10);
 
 var layout = require('../')(graph);
 
+// Or try this if you want verlet integratioon:
+// var layout = require('../')(graph, { integrator: 'verlet'});
+
 var geometry = new THREE.CubeGeometry(5,5,5);
 var nodeMaterial = new THREE.MeshBasicMaterial({color: 0x009e8f});
 

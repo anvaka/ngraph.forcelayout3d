@@ -9,7 +9,7 @@ document.body.appendChild(renderer.domElement);
 
 var graph = require('ngraph.generators').grid3(10, 10, 10);
 
-var layout = require('../')(graph);
+var layout = require('../')(graph, { integrator: 'verlet'});
 
 var geometry = new THREE.CubeGeometry(5,5,5);
 var nodeMaterial = new THREE.MeshBasicMaterial({color: 0x009e8f});
@@ -42,7 +42,7 @@ var render = function () {
 
 render();
 
-},{"../":2,"ngraph.generators":11}],2:[function(require,module,exports){
+},{"../":2,"ngraph.generators":12}],2:[function(require,module,exports){
 /**
  * This module provides all required forces to regular ngraph.physics.simulator
  * to make it 3D simulator. Ideally ngraph.physics.simulator should operate
@@ -59,14 +59,22 @@ function createLayout(graph, physicsSettings) {
         createBounds: require('./lib/bounds'),
         createDragForce: require('./lib/dragForce'),
         createSpringForce: require('./lib/springForce'),
-        integrator: require('./lib/eulerIntegrator'),
+        integrator: getIntegrator(physicsSettings),
         createBody: require('./lib/createBody')
       });
 
   return createLayout.get2dLayout(graph, physicsSettings);
 }
 
-},{"./lib/bounds":3,"./lib/createBody":4,"./lib/dragForce":5,"./lib/eulerIntegrator":6,"./lib/springForce":7,"ngraph.forcelayout":10,"ngraph.merge":13,"ngraph.quadtreebh3d":26}],3:[function(require,module,exports){
+function getIntegrator(physicsSettings) {
+  if (physicsSettings && physicsSettings.integrator === 'verlet') {
+    return require('./lib/verletIntegrator.js');
+  }
+
+  return require('./lib/eulerIntegrator')
+}
+
+},{"./lib/bounds":3,"./lib/createBody":4,"./lib/dragForce":5,"./lib/eulerIntegrator":6,"./lib/springForce":7,"./lib/verletIntegrator.js":8,"ngraph.forcelayout":11,"ngraph.merge":14,"ngraph.quadtreebh3d":27}],3:[function(require,module,exports){
 module.exports = function (bodies, settings) {
   var random = require('ngraph.random').random(42);
   var boundingBox =  { x1: 0, y1: 0, z1: 0, x2: 0, y2: 0, z2: 0 };
@@ -165,14 +173,14 @@ module.exports = function (bodies, settings) {
   }
 };
 
-},{"ngraph.random":30}],4:[function(require,module,exports){
+},{"ngraph.random":31}],4:[function(require,module,exports){
 var physics = require('ngraph.physics.primitives');
 
 module.exports = function(pos) {
   return new physics.Body3d(pos);
 }
 
-},{"ngraph.physics.primitives":14}],5:[function(require,module,exports){
+},{"ngraph.physics.primitives":15}],5:[function(require,module,exports){
 /**
  * Represents 3d drag force, which reduces force value on each step by given
  * coefficient.
@@ -202,24 +210,51 @@ module.exports = function (options) {
   return api;
 };
 
-},{"ngraph.expose":9,"ngraph.merge":13}],6:[function(require,module,exports){
+},{"ngraph.expose":10,"ngraph.merge":14}],6:[function(require,module,exports){
+/**
+ * Performs 3d forces integration, using given timestep. Uses Euler method to solve
+ * differential equation (http://en.wikipedia.org/wiki/Euler_method ).
+ *
+ * @returns {Number} squared distance of total position updates.
+ */
+
 module.exports = integrate;
 
 function integrate(bodies, timeStep) {
-  var tx = 0, ty = 0, tz = 0,
-      i, max = bodies.length;
+  var dx = 0, tx = 0,
+      dy = 0, ty = 0,
+      dz = 0, tz = 0,
+      i,
+      max = bodies.length;
 
   for (i = 0; i < max; ++i) {
     var body = bodies[i],
-      coeff = timeStep / body.mass;
+        coeff = timeStep / body.mass;
 
-    body.pos.x = 2 * body.pos.x - body.prevPos.x + (body.force.x / body.mass) * timeStep * timeStep
-    body.pos.y = 2 * body.pos.y - body.prevPos.y + (body.force.y / body.mass) * timeStep * timeStep
-    body.pos.z = 2 * body.pos.z - body.prevPos.z + (body.force.z / body.mass) * timeStep * timeStep
+    body.velocity.x += coeff * body.force.x;
+    body.velocity.y += coeff * body.force.y;
+    body.velocity.z += coeff * body.force.z;
 
-    tx += Math.abs(body.pos.x - body.prevPos.x)
-    ty += Math.abs(body.pos.y - body.prevPos.y)
-    tz += Math.abs(body.pos.z - body.prevPos.z)
+    var vx = body.velocity.x,
+        vy = body.velocity.y,
+        vz = body.velocity.z,
+        v = Math.sqrt(vx * vx + vy * vy + vz * vz);
+
+    if (v > 1) {
+      body.velocity.x = vx / v;
+      body.velocity.y = vy / v;
+      body.velocity.z = vz / v;
+    }
+
+    dx = timeStep * body.velocity.x;
+    dy = timeStep * body.velocity.y;
+    dz = timeStep * body.velocity.z;
+
+    body.pos.x += dx;
+    body.pos.y += dy;
+    body.pos.z += dz;
+
+    tx += Math.abs(dx); ty += Math.abs(dy); tz += Math.abs(dz);
   }
 
   return (tx * tx + ty * ty + tz * tz)/bodies.length;
@@ -281,7 +316,30 @@ module.exports = function (options) {
   return api;
 }
 
-},{"ngraph.expose":9,"ngraph.merge":13,"ngraph.random":30}],8:[function(require,module,exports){
+},{"ngraph.expose":10,"ngraph.merge":14,"ngraph.random":31}],8:[function(require,module,exports){
+module.exports = integrate;
+
+function integrate(bodies, timeStep) {
+  var tx = 0, ty = 0, tz = 0,
+      i, max = bodies.length;
+
+  for (i = 0; i < max; ++i) {
+    var body = bodies[i],
+      coeff = timeStep * timeStep / body.mass;
+
+    body.pos.x = 2 * body.pos.x - body.prevPos.x + body.force.x * coeff;
+    body.pos.y = 2 * body.pos.y - body.prevPos.y + body.force.y * coeff;
+    body.pos.z = 2 * body.pos.z - body.prevPos.z + body.force.z * coeff;
+
+    tx += Math.abs(body.pos.x - body.prevPos.x)
+    ty += Math.abs(body.pos.y - body.prevPos.y)
+    tz += Math.abs(body.pos.z - body.prevPos.z)
+  }
+
+  return (tx * tx + ty * ty + tz * tz)/bodies.length;
+}
+
+},{}],9:[function(require,module,exports){
 module.exports = function(subject) {
   validateSubject(subject);
 
@@ -371,7 +429,7 @@ function validateSubject(subject) {
   }
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = exposeProperties;
 
 /**
@@ -417,7 +475,7 @@ function augment(source, target, key) {
   }
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = createLayout;
 module.exports.simulator = require('ngraph.physics.simulator');
 
@@ -732,7 +790,7 @@ function createLayout(graph, physicsSettings) {
 
 function noop() { }
 
-},{"ngraph.events":8,"ngraph.physics.simulator":15}],11:[function(require,module,exports){
+},{"ngraph.events":9,"ngraph.physics.simulator":16}],12:[function(require,module,exports){
 module.exports = {
   ladder: ladder,
   complete: complete,
@@ -1033,7 +1091,7 @@ function wattsStrogatz(n, k, p, seed) {
   return g;
 }
 
-},{"ngraph.graph":12,"ngraph.random":30}],12:[function(require,module,exports){
+},{"ngraph.graph":13,"ngraph.random":31}],13:[function(require,module,exports){
 /**
  * @fileOverview Contains definition of the core graph object.
  */
@@ -1612,7 +1670,7 @@ function makeLinkId(fromId, toId) {
   return hashCode(fromId.toString() + '👉 ' + toId.toString());
 }
 
-},{"ngraph.events":8}],13:[function(require,module,exports){
+},{"ngraph.events":9}],14:[function(require,module,exports){
 module.exports = merge;
 
 /**
@@ -1645,7 +1703,7 @@ function merge(target, options) {
   return target;
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = {
   Body: Body,
   Vector2d: Vector2d,
@@ -1712,7 +1770,7 @@ Vector3d.prototype.reset = function () {
   this.x = this.y = this.z = 0;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Manages a simulation of physical forces acting on bodies and springs.
  */
@@ -1990,7 +2048,7 @@ function physicsSimulator(settings) {
   }
 };
 
-},{"./lib/bounds":16,"./lib/createBody":17,"./lib/dragForce":18,"./lib/eulerIntegrator":19,"./lib/spring":20,"./lib/springForce":21,"ngraph.events":8,"ngraph.expose":9,"ngraph.merge":13,"ngraph.quadtreebh":22}],16:[function(require,module,exports){
+},{"./lib/bounds":17,"./lib/createBody":18,"./lib/dragForce":19,"./lib/eulerIntegrator":20,"./lib/spring":21,"./lib/springForce":22,"ngraph.events":9,"ngraph.expose":10,"ngraph.merge":14,"ngraph.quadtreebh":23}],17:[function(require,module,exports){
 module.exports = function (bodies, settings) {
   var random = require('ngraph.random').random(42);
   var boundingBox =  { x1: 0, y1: 0, x2: 0, y2: 0 };
@@ -2072,14 +2130,14 @@ module.exports = function (bodies, settings) {
   }
 }
 
-},{"ngraph.random":30}],17:[function(require,module,exports){
+},{"ngraph.random":31}],18:[function(require,module,exports){
 var physics = require('ngraph.physics.primitives');
 
 module.exports = function(pos) {
   return new physics.Body(pos);
 }
 
-},{"ngraph.physics.primitives":14}],18:[function(require,module,exports){
+},{"ngraph.physics.primitives":15}],19:[function(require,module,exports){
 /**
  * Represents drag force, which reduces force value on each step by given
  * coefficient.
@@ -2108,7 +2166,7 @@ module.exports = function (options) {
   return api;
 };
 
-},{"ngraph.expose":9,"ngraph.merge":13}],19:[function(require,module,exports){
+},{"ngraph.expose":10,"ngraph.merge":14}],20:[function(require,module,exports){
 /**
  * Performs forces integration, using given timestep. Uses Euler method to solve
  * differential equation (http://en.wikipedia.org/wiki/Euler_method ).
@@ -2155,7 +2213,7 @@ function integrate(bodies, timeStep) {
   return (tx * tx + ty * ty)/max;
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = Spring;
 
 /**
@@ -2171,7 +2229,7 @@ function Spring(fromBody, toBody, length, coeff, weight) {
     this.weight = typeof weight === 'number' ? weight : 1;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * Represents spring force, which updates forces acting on two bodies, conntected
  * by a spring.
@@ -2223,7 +2281,7 @@ module.exports = function (options) {
   return api;
 }
 
-},{"ngraph.expose":9,"ngraph.merge":13,"ngraph.random":30}],22:[function(require,module,exports){
+},{"ngraph.expose":10,"ngraph.merge":14,"ngraph.random":31}],23:[function(require,module,exports){
 /**
  * This is Barnes Hut simulation algorithm for 2d case. Implementation
  * is highly optimized (avoids recusion and gc pressure)
@@ -2549,7 +2607,7 @@ function setChild(node, idx, child) {
   else if (idx === 3) node.quad3 = child;
 }
 
-},{"./insertStack":23,"./isSamePosition":24,"./node":25,"ngraph.random":30}],23:[function(require,module,exports){
+},{"./insertStack":24,"./isSamePosition":25,"./node":26,"ngraph.random":31}],24:[function(require,module,exports){
 module.exports = InsertStack;
 
 /**
@@ -2593,7 +2651,7 @@ function InsertStackElement(node, body) {
     this.body = body; // physical body which needs to be inserted to node
 }
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function isSamePosition(point1, point2) {
     var dx = Math.abs(point1.x - point2.x);
     var dy = Math.abs(point1.y - point2.y);
@@ -2601,7 +2659,7 @@ module.exports = function isSamePosition(point1, point2) {
     return (dx < 1e-8 && dy < 1e-8);
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * Internal data structure to represent 2D QuadTree node
  */
@@ -2633,7 +2691,7 @@ module.exports = function Node() {
   this.right = 0;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
  * This is Barnes Hut simulation algorithm for 3d case. Implementation
  * is highly optimized (avoids recusion and gc pressure)
@@ -3028,7 +3086,7 @@ function setChild(node, idx, child) {
   else if (idx === 7) node.quad7 = child;
 }
 
-},{"./insertStack":27,"./isSamePosition":28,"./node":29,"ngraph.random":30}],27:[function(require,module,exports){
+},{"./insertStack":28,"./isSamePosition":29,"./node":30,"ngraph.random":31}],28:[function(require,module,exports){
 module.exports = InsertStack;
 
 /**
@@ -3072,7 +3130,7 @@ function InsertStackElement(node, body) {
     this.body = body; // physical body which needs to be inserted to node
 }
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = function isSamePosition(point1, point2) {
     var dx = Math.abs(point1.x - point2.x);
     var dy = Math.abs(point1.y - point2.y);
@@ -3081,7 +3139,7 @@ module.exports = function isSamePosition(point1, point2) {
     return (dx < 1e-8 && dy < 1e-8 && dz < 1e-8);
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * Internal data structure to represent 3D QuadTree node
  */
@@ -3125,7 +3183,7 @@ module.exports = function Node() {
   this.back = 0;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = {
   random: random,
   randomIterator: randomIterator

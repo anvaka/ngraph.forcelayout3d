@@ -71,6 +71,35 @@ test('layout initializes nodes positions', function (t) {
   t.end();
 });
 
+test('layout can use verlet integrator', function (t) {
+  var graph = createGraph();
+  graph.addLink(1, 2);
+
+  var layout = createLayout(graph, {
+    integrator: 'verlet'
+  });
+
+  // perform one iteration of layout:
+  layout.step();
+
+  graph.forEachNode(function (node) {
+    var pos = layout.getNodePosition(node.id);
+    t.ok(pos && typeof pos.x === 'number' &&
+          typeof pos.y === 'number' &&
+          typeof pos.z === 'number', 'Position is defined');
+  });
+
+  graph.forEachLink(function (link) {
+    var linkPos = layout.getLinkPosition(link.id);
+    t.ok(linkPos && linkPos.from && linkPos.to, 'Link position is defined');
+    var fromPos = layout.getNodePosition(link.fromId);
+    t.ok(linkPos.from === fromPos, '"From" should be identical to getNodePosition');
+    var toPos = layout.getNodePosition(link.toId);
+    t.ok(linkPos.to === toPos, '"To" should be identical to getNodePosition');
+  });
+
+  t.end();
+});
 test('Layout can set node position', function (t) {
   var graph = createGraph();
   graph.addLink(1, 2);
