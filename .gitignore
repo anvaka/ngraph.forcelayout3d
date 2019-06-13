@@ -11,7 +11,7 @@ lib-cov
 pids
 logs
 results
-nyc_output
+.nyc_output
 
 npm-debug.log
 node_modules

@@ -1,6 +1,6 @@
 {
   "name": "ngraph.forcelayout3d",
-  "version": "0.0.16",
+  "version": "1.0.0",
   "description": "Force directed graph layout in 3d",
   "main": "index.js",
   "scripts": {
@@ -22,16 +22,16 @@
   },
   "devDependencies": {
     "benchmark": "~1.0.0",
-    "ngraph.generators": "0.0.16",
-    "ngraph.graph": "0.0.12",
-    "tap": "^1.4.1"
+    "ngraph.generators": "^18.0.1",
+    "ngraph.graph": "^18.0.0",
+    "tap": "^14.2.2"
   },
   "dependencies": {
-    "ngraph.quadtreebh3d": "0.0.3",
-    "ngraph.random": "0.0.1",
-    "ngraph.merge": "0.0.1",
-    "ngraph.expose": "0.0.0",
-    "ngraph.physics.primitives": "0.0.7",
-    "ngraph.forcelayout": "0.0.22"
+    "ngraph.quadtreebh3d": "^1.0.0",
+    "ngraph.random": "^1.0.0",
+    "ngraph.merge": "^1.0.0",
+    "ngraph.expose": "^1.0.0",
+    "ngraph.physics.primitives": "^1.0.0",
+    "ngraph.forcelayout": "^1.0.0"
   }
 }
