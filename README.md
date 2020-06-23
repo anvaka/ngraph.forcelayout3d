@@ -8,6 +8,7 @@ repository is part of [ngraph family](https://github.com/anvaka/ngraph), and
 operates on [`ngraph.graph`](https://github.com/anvaka/ngraph.graph) data structure.
 
 If two dimensions is enough please also checkout [ngraph.forcelayout](https://github.com/anvaka/ngraph.forcelayout)
+For higher dimensions use [ngraph.forcelayout.nd](https://github.com/anvaka/ngraph.forcelayout.nd)
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/anvaka/VivaGraphJS)
 
