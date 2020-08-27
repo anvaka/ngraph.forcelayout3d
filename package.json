@@ -31,7 +31,6 @@
     "ngraph.random": "^1.0.0",
     "ngraph.merge": "^1.0.0",
     "ngraph.expose": "^1.0.0",
-    "ngraph.physics.primitives": "^1.0.0",
-    "ngraph.forcelayout": "^1.0.1"
+    "ngraph.forcelayout": "^1.2.0"
   }
 }
