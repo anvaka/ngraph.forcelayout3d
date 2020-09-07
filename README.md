@@ -2,13 +2,12 @@ Force Directed layout in 3D
 ==========================
 [![Build Status](https://travis-ci.org/anvaka/ngraph.forcelayout3d.png?branch=master)](https://travis-ci.org/anvaka/ngraph.forcelayout3d)
 
-This is a [force directed](http://en.wikipedia.org/wiki/Force-directed_graph_drawing)
-graph layouter in 3D space. It is using oct tree as an n-body solver. This
-repository is part of [ngraph family](https://github.com/anvaka/ngraph), and
-operates on [`ngraph.graph`](https://github.com/anvaka/ngraph.graph) data structure.
+Please use [ngraph.forcelayout](https://github.com/anvaka/ngraph.forcelayout) instead. It is able to perform
+layout in 2D, 3D and higher dimensional spaces.
 
-If two dimensions is enough please also checkout [ngraph.forcelayout](https://github.com/anvaka/ngraph.forcelayout)
-For higher dimensions use [ngraph.forcelayout.nd](https://github.com/anvaka/ngraph.forcelayout.nd)
+This repository is a [force directed](http://en.wikipedia.org/wiki/Force-directed_graph_drawing)
+graph layouter that works only in 3D space. The repository is part of [ngraph family](https://github.com/anvaka/ngraph), and
+operates on [`ngraph.graph`](https://github.com/anvaka/ngraph.graph) data structure.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/anvaka/VivaGraphJS)
 
