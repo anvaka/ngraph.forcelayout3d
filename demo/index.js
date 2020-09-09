@@ -16,11 +16,10 @@ var layout = require('../')(graph);
 var geometry = new THREE.CubeGeometry(5,5,5);
 var nodeMaterial = new THREE.MeshBasicMaterial({color: 0x009e8f});
 
-var ui = {};
+var ui = new Map();
 graph.forEachNode(function (node) {
-  var pos = layout.getNodePosition(node.id);
   var cube = new THREE.Mesh(geometry, nodeMaterial);
-  ui[node.id] = cube;
+  ui.set(node.id, cube);
   scene.add(cube);
 });
 
@@ -28,13 +27,13 @@ graph.forEachNode(function (node) {
 var render = function () {
   requestAnimationFrame(render);
   layout.step();
-  for (var key in ui) {
-    var cube = ui[key];
+
+  ui.forEach((cube, key) => {
     var pos = layout.getNodePosition(key);
     cube.position.x = pos.x;
     cube.position.y = pos.y;
     cube.position.z = pos.z;
-  }
+  });
   var timer = Date.now() * 0.0002;
   camera.position.x = Math.cos( timer ) * 1500;
   camera.position.z = Math.sin( timer ) * 1500;
