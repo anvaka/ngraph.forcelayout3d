@@ -18,8 +18,8 @@ test('update bounding box', function (t) {
 
   b.update();
   // now two bodies, and box should be 0, 0, 0 > 1, 1, 1
-  t.equals(box.x1, 0); t.equals(box.y1, 0); t.equals(box.z1, 0);
-  t.equals(box.x2, 1); t.equals(box.y2, 1); t.equals(box.z2, 1);
+  t.equal(box.x1, 0); t.equal(box.y1, 0); t.equal(box.z1, 0);
+  t.equal(box.x2, 1); t.equal(box.y2, 1); t.equal(box.z2, 1);
 
   t.end();
 });

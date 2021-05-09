@@ -4,7 +4,7 @@
   "description": "Force directed graph layout in 3d",
   "main": "index.js",
   "scripts": {
-    "test": "tap test/*.js",
+    "test": "tap --branches=80 --lines=80 --statements=80 --functions=80 test/*.js",
     "perf": "npm version && node perf/index.js",
     "demo": "browserify demo/index.js > demo/bundle.js"
   },
@@ -24,13 +24,13 @@
     "benchmark": "~1.0.0",
     "ngraph.generators": "^19.0.0",
     "ngraph.graph": "^19.1.0",
-    "tap": "^14.10.7"
+    "tap": "^15.0.9"
   },
   "dependencies": {
-    "ngraph.quadtreebh3d": "^1.0.0",
-    "ngraph.random": "^1.0.0",
-    "ngraph.merge": "^1.0.0",
     "ngraph.expose": "^1.0.0",
-    "ngraph.forcelayout": "^1.2.0"
+    "ngraph.forcelayout": "^1.2.0",
+    "ngraph.merge": "^1.0.0",
+    "ngraph.quadtreebh3d": "^1.0.0",
+    "ngraph.random": "^1.0.0"
   }
 }
